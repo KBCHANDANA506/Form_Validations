@@ -1,5 +1,6 @@
 from django import forms
 from django.http import HttpResponse
+from django.core import validators
 
 def check_for_a(value):
     if value[0].lower()=='a':
@@ -10,11 +11,12 @@ def check_for_len(value):
         raise forms.ValidationError("age is more")
         
 class StudentForm(forms.Form):
-    name=forms.CharField(max_length=100,validators=[check_for_a])
-    age=forms.IntegerField(validators=[check_for_len])
+    name=forms.CharField(max_length=100,validators=[validators.MaxLengthValidator(5)])
+    age=forms.IntegerField(validators=[validators.MaxValueValidator(50)])
     email=forms.EmailField()
     re_enter_email=forms.EmailField()
     botcatcher=forms.CharField(max_length=100,widget=forms.HiddenInput,required=False)
+    Mobile=forms.CharField(max_length=100,validators=[validators.RegexValidator('[6-9]\d{9}')])
 
     def clean(self):
         e=self.cleaned_data['email']
